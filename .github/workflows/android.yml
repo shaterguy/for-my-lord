@@ -1,15 +1,13 @@
 name: Android CI
 
 on:
+  push:
+    branches: ["main", "feature/**"]
+    tags: ["v*"]
+    paths-ignore: [".github/workflows/**"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
-    inputs:
-      publish_release:
-        description: 'Explicitly publish the existing v1.0.0 release as emergency recovery'
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -41,7 +39,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    if: github.event_name == 'workflow_dispatch' && inputs.publish_release == true && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     permissions:
